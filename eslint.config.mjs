@@ -14,7 +14,8 @@ export default [
     {
         languageOptions:
         {
-            globals: globals.browser
+            globals: globals.browser,
+            process: "readOnly"
         }
     },
     pluginJs.configs.recommended,
