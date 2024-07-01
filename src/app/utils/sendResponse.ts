@@ -9,9 +9,9 @@ type TResponse<T> = {
 
 const sendResponse = <T>(res: Response, payload: TResponse<T>) => {
     res.status(payload.status).json({
+        success: payload.success,
         status: payload.status,
         message: payload.message,
-        success: payload.success,
         data: payload.data,
     })
 

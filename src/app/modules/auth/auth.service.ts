@@ -2,6 +2,10 @@ import AppError from "../../error/AppError";
 import { TUser } from "../user/user.interface";
 import User from "../user/user.model";
 import httpStatus from 'http-status';
+import { TSignIn } from "./auth.interface";
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import config from "../../config";
 
 const createUserIntoDB = async (payload: TUser) => {
     //? check the user is exists or not
@@ -21,7 +25,36 @@ const createUserIntoDB = async (payload: TUser) => {
     return result;
 }
 
+const signInUserIntoDB = async (payload: TSignIn) => {
+    //? check the user is exists in the DB or not
+    const user = await User.findOne({ email: payload.email })
+    if (!user) {
+        throw new AppError(httpStatus.UNAUTHORIZED, 'User with this email not exists!')
+    }
+
+    //? check the password is matched or not
+    const isPasswordMatch = await bcrypt.compare(payload.password, user.password)
+    if (!isPasswordMatch) {
+        throw new AppError(httpStatus.FORBIDDEN, 'Wrong password!')
+    }
+
+    //! create token payload
+    const jwtPayload = {
+        email: user?.email as string,
+        role: user?.role as string,
+    }
+
+    const accessToken = jwt.sign(
+        jwtPayload,
+        config.access_token_secret as string,
+        { expiresIn: config.access_token_expires_in as string }
+    );
+
+    return { user, accessToken }
+}
+
 
 export const AuthServices = {
-    createUserIntoDB
+    createUserIntoDB,
+    signInUserIntoDB
 }
