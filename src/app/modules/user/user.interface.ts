@@ -5,6 +5,14 @@ export type TUserName = {
     lastName: string;
 }
 
+export type TAddress = {
+    street: string;
+    city: string;
+    state: string;
+    zipCode: string;
+    country: string;
+}
+
 export type TUser = {
     name: TUserName;
     gender: 'male' | 'female' | 'other';
@@ -12,7 +20,7 @@ export type TUser = {
     password: string;  // Assumed to be hashed
     phone: string;
     role: 'admin' | 'user';
-    address: string;
+    address: TAddress;
     isDeleted: boolean;
 }
 

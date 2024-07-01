@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { user_gender, user_role } from './user.constant';
 
 // Zod schema for TUserName
-const UserNameSchema = z.object({
+const UserNameValidationSchema = z.object({
     firstName: z.string(
         { required_error: 'First name must be provided' }
     ),
@@ -10,10 +10,16 @@ const UserNameSchema = z.object({
         { required_error: 'First name must be provided' }
     )
 });
-
+const AddressValidationSchema = z.object({
+    street: z.string({ required_error: 'Street is required' }),
+    city: z.string({ required_error: 'City is required' }),
+    zipCode: z.string({ required_error: 'Zip code is required' }),
+    state: z.string({ required_error: 'State is required' }),
+    country: z.string({ required_error: 'Country is required' }),
+});
 // Zod schema for TUser
 const createUserValidationSchema = z.object({
-    name: UserNameSchema,
+    name: UserNameValidationSchema,
     gender: z.enum(
         [...user_gender] as [string, ...string[]],
         { message: 'Gender must be one of: male, female, other' }
@@ -29,8 +35,7 @@ const createUserValidationSchema = z.object({
         [...user_role] as [string, ...string[]],
         { message: 'Role must be either admin or user' }
     ),
-    address: z.string({ required_error: 'Address is required' })
-        .min(5, 'Address must be at least 5 characters long'),
+    address: AddressValidationSchema
 });
 
 export const validateUser = {

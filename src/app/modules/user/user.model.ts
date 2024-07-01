@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { TUser, TUserName } from './user.interface';
+import { TAddress, TUser, TUserName } from './user.interface';
 import { user_gender, user_role } from './user.constant';
 import bcrypt from 'bcrypt';
 import config from '../../config';
@@ -19,6 +19,35 @@ const UserNameSchema = new Schema<TUserName>({
         _id: false
     }
 );
+
+const AddressSchema = new Schema<TAddress>({
+    street: {
+        type: String,
+        required: [true, 'Street is required']
+    },
+    city: {
+        type: String,
+        required: [true, 'City is required']
+    },
+    zipCode: {
+        type: String,
+        required: [true, 'Zip code is required']
+    },
+    state: {
+        type: String,
+        required: [true, 'State is required']
+    },
+
+    country: {
+        type: String,
+        required: [true, 'Country is required']
+    },
+
+},
+    {
+        _id: false
+    }
+)
 
 // Define the Mongoose schema for User
 const UserSchema = new Schema<TUser>({
@@ -59,11 +88,7 @@ const UserSchema = new Schema<TUser>({
         },
         required: [true, 'Role is required']
     },
-    address: {
-        type: String,
-        required: [true, 'Address is required'],
-        minlength: [5, 'Address must be at least 5 characters long']
-    },
+    address: AddressSchema,
     isDeleted: {
         type: Boolean,
         default: false
