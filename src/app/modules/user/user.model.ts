@@ -1,6 +1,8 @@
 import { Schema, model } from 'mongoose';
 import { TUser, TUserName } from './user.interface';
 import { user_gender, user_role } from './user.constant';
+import bcrypt from 'bcrypt';
+import config from '../../config';
 
 // Define the Mongoose schema for UserName
 const UserNameSchema = new Schema<TUserName>({
@@ -12,7 +14,11 @@ const UserNameSchema = new Schema<TUserName>({
         type: String,
         required: [true, 'Last name is required'],
     }
-});
+},
+    {
+        _id: false
+    }
+);
 
 // Define the Mongoose schema for User
 const UserSchema = new Schema<TUser>({
@@ -41,6 +47,7 @@ const UserSchema = new Schema<TUser>({
     phone: {
         type: String,
         required: [true, 'Phone number is required'],
+        unique: true,
         minlength: [10, 'Phone number must be at least 10 characters long'],
         maxlength: [15, 'Phone number cannot exceed 15 characters']
     },
@@ -62,6 +69,20 @@ const UserSchema = new Schema<TUser>({
         default: false
     }
 }, { timestamps: true });
+
+//! Hashed the password
+UserSchema.pre('save', async function (next) {
+    this.password = await bcrypt.hash(this.password, Number(config.bcrypt_salt_round))
+    next();
+})
+
+//! remove the password field in the response
+UserSchema.set('toJSON', {
+    transform: (doc, ret, options) => {
+        delete ret.password;
+        return ret;
+    }
+});
 
 // Create the Mongoose model
 const User = model<TUser>('User', UserSchema);

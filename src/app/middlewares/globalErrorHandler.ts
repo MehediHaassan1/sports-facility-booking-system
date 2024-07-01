@@ -7,8 +7,8 @@ const globalErrorHandler = (
     res: Response,
     next: NextFunction
 ) => {
-    let status = 500;
-    let message = 'Something went wrong'
+    let status = error.status || 500;
+    let message = error.message || 'Something went wrong';
 
     return res.status(status).json({
         success: false,
