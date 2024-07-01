@@ -1,3 +1,5 @@
+import { userRoles } from "./user.constant";
+
 export type TUserName = {
     firstName: string;
     lastName: string;
@@ -13,3 +15,5 @@ export type TUser = {
     address: string;
     isDeleted: boolean;
 }
+
+export type TUserRoles = typeof userRoles[keyof typeof userRoles]
