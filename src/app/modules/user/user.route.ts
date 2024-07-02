@@ -11,5 +11,19 @@ router.get(
     UserControllers.getUserOwnData,
 )
 
+router.get(
+    '/',
+    authHandler(userRoles.ADMIN),
+    UserControllers.getAllUsers
+)
+
+
+router.get(
+    '/:email',
+    authHandler(userRoles.ADMIN),
+    UserControllers.getSingleUser
+)
+
+
 
 export const UserRoutes = router;
