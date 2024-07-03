@@ -32,6 +32,11 @@ const signInUserIntoDB = async (payload: TSignIn) => {
         throw new AppError(httpStatus.UNAUTHORIZED, 'User with this email not exists!')
     }
 
+    //? check the user is active or blocked!
+    if (user.status === 'blocked') {
+        throw new AppError(httpStatus.FORBIDDEN, 'User is blocked!')
+    }
+
     //? check the password is matched or not
     const isPasswordMatch = await bcrypt.compare(payload.password, user.password)
     if (!isPasswordMatch) {
@@ -59,6 +64,11 @@ const getUserOwnDataFromDB = async (payload: string) => {
 
     if (!user) {
         throw new AppError(httpStatus.NOT_FOUND, 'User not found')
+    }
+
+    //? check the user is active or blocked!
+    if (user.status === 'blocked') {
+        throw new AppError(httpStatus.FORBIDDEN, 'User is blocked!')
     }
 
     return user;

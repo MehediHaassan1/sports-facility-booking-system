@@ -22,6 +22,7 @@ export type TUser = {
     role: 'admin' | 'user';
     address: TAddress;
     isDeleted: boolean;
+    status: 'active' | 'blocked';
 }
 
 export type TUserRoles = typeof userRoles[keyof typeof userRoles]
