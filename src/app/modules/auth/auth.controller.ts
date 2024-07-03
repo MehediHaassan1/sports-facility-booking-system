@@ -26,7 +26,20 @@ const SignInUser = catchAsync(async (req, res) => {
     })
 })
 
+
+const getUserOwnData = catchAsync(async (req, res) => {
+    const result = await AuthServices.getUserOwnDataFromDB(req.user.email);
+
+    sendResponse(res, {
+        success: true,
+        status: httpStatus.OK,
+        message: "User's data retrieved successfully",
+        data: result,
+    });
+})
+
 export const AuthControllers = {
     createUser,
-    SignInUser
+    SignInUser,
+    getUserOwnData
 }

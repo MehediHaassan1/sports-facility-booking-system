@@ -53,8 +53,20 @@ const signInUserIntoDB = async (payload: TSignIn) => {
     return { user, accessToken }
 }
 
+const getUserOwnDataFromDB = async (payload: string) => {
+    //? check if the user exists in the database or not
+    const user = await User.findOne({ email: payload });
+
+    if (!user) {
+        throw new AppError(httpStatus.NOT_FOUND, 'User not found')
+    }
+
+    return user;
+}
+
 
 export const AuthServices = {
     createUserIntoDB,
-    signInUserIntoDB
+    signInUserIntoDB,
+    getUserOwnDataFromDB
 }

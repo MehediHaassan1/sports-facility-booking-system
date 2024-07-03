@@ -6,12 +6,6 @@ import { userRoles, user_role } from "./user.constant";
 const router = Router();
 
 router.get(
-    '/my-data',
-    authHandler(userRoles.ADMIN, userRoles.USER),
-    UserControllers.getUserOwnData,
-)
-
-router.get(
     '/',
     authHandler(userRoles.ADMIN),
     UserControllers.getAllUsers

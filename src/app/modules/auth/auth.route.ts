@@ -3,6 +3,8 @@ import { validateUser } from "../user/user.validation";
 import { AuthControllers } from "./auth.controller";
 import validateRequestHandler from "../../middlewares/validateRequestHandler";
 import { validateAuth } from "./auth.validation";
+import authHandler from "../../middlewares/authHandler";
+import { userRoles } from "../user/user.constant";
 
 const router = Router();
 
@@ -17,6 +19,12 @@ router.post(
     '/signin',
     validateRequestHandler(validateAuth.signInValidationSchema),
     AuthControllers.SignInUser
+)
+
+router.get(
+    '/my-data',
+    authHandler(userRoles.ADMIN, userRoles.USER),
+    AuthControllers.getUserOwnData,
 )
 
 export const AuthRoutes = router;
