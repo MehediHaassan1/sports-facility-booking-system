@@ -38,8 +38,23 @@ const getUserOwnData = catchAsync(async (req, res) => {
     });
 })
 
+
+const changeUserPassword = catchAsync(async (req, res) => {
+    console.log(req.user.email);
+    console.log(req.body);
+    const result = await AuthServices.changeUserPasswordIntoDB(req.user.email, req.body)
+
+    sendResponse(res, {
+        success: true,
+        status: httpStatus.OK,
+        message: "Password changed successfully",
+        data: result,
+    });
+})
+
 export const AuthControllers = {
     createUser,
     SignInUser,
-    getUserOwnData
+    getUserOwnData,
+    changeUserPassword,
 }

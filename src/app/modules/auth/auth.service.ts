@@ -2,7 +2,7 @@ import AppError from "../../error/AppError";
 import { TUser } from "../user/user.interface";
 import User from "../user/user.model";
 import httpStatus from 'http-status';
-import { TSignIn } from "./auth.interface";
+import { TPasswordChange, TSignIn } from "./auth.interface";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import config from "../../config";
@@ -75,8 +75,47 @@ const getUserOwnDataFromDB = async (payload: string) => {
 }
 
 
+const changeUserPasswordIntoDB = async (email: string, payload: TPasswordChange) => {
+    const { oldPassword, newPassword, confirmPassword } = payload;
+
+    //? check if the user exists in the database or not
+    const user = await User.findOne({ email });
+
+    if (!user) {
+        throw new AppError(httpStatus.NOT_FOUND, 'User not found')
+    }
+
+    //? check the user is active or blocked!
+    if (user.status === 'blocked') {
+        throw new AppError(httpStatus.FORBIDDEN, 'User is blocked!')
+    }
+
+    //? check the old password is correct or not
+    const isOldPasswordMatch = await bcrypt.compare(oldPassword, user.password)
+    if (!isOldPasswordMatch) {
+        throw new AppError(httpStatus.FORBIDDEN, 'Old password is incorrect!')
+    }
+
+    //? check the new password and confirm password is same
+    if (newPassword !== confirmPassword) {
+        throw new AppError(httpStatus.FORBIDDEN, 'New password and confirm password are not same!')
+    }
+
+    //* hash the confirm password and store it in the db
+    const newHashedConfirmPassword = await bcrypt.hash(confirmPassword, Number(config.bcrypt_salt_round))
+
+    await User.findOneAndUpdate(
+        { email },
+        { password: newHashedConfirmPassword }
+    )
+
+
+    return user;
+}
+
 export const AuthServices = {
     createUserIntoDB,
     signInUserIntoDB,
-    getUserOwnDataFromDB
+    getUserOwnDataFromDB,
+    changeUserPasswordIntoDB,
 }

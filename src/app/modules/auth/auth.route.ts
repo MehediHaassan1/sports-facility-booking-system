@@ -12,19 +12,27 @@ const router = Router();
 router.post(
     '/signup',
     validateRequestHandler(validateUser.createUserValidationSchema),
-    AuthControllers.createUser
+    AuthControllers.createUser,
 )
 
 router.post(
     '/signin',
     validateRequestHandler(validateAuth.signInValidationSchema),
-    AuthControllers.SignInUser
+    AuthControllers.SignInUser,
 )
 
 router.get(
     '/my-data',
     authHandler(userRoles.ADMIN, userRoles.USER),
     AuthControllers.getUserOwnData,
+)
+
+
+router.post(
+    '/change-password',
+    authHandler(userRoles.ADMIN, userRoles.USER),
+    validateRequestHandler(validateAuth.passwordChangeValidationSchema),
+    AuthControllers.changeUserPassword,
 )
 
 export const AuthRoutes = router;

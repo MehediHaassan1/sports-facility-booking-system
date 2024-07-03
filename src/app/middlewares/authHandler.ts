@@ -22,7 +22,7 @@ const authHandler = (...userRole: TUserRoles[]) => {
         const { email, role } = decoded;
 
         //? check the user exists or not
-        const isUserExists = await User.findOne({ email });
+        const isUserExists = await User.findOne({ email, role });
         if (!isUserExists) {
             throw new AppError(httpStatus.NOT_FOUND, 'User not found!')
         }
