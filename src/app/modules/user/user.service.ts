@@ -17,6 +17,11 @@ const getSingleUserFromDB = async (email: string) => {
         throw new AppError(httpStatus.NOT_FOUND, 'User not found')
     }
 
+    //? check the user is deleted or not
+    if (user.isDeleted) {
+        throw new AppError(httpStatus.FORBIDDEN, 'User is deleted')
+    }
+
     //? check the user is active or blocked!
     if (user.status === 'blocked') {
         throw new AppError(httpStatus.FORBIDDEN, 'User is blocked!')
@@ -34,6 +39,11 @@ const updateUserDataIntoDB = async (jwtData: JwtPayload, payload: Partial<TUser>
     const user = await User.findOne({ email: jwtData.email })
     if (!user) {
         throw new AppError(httpStatus.NOT_FOUND, 'User not found')
+    }
+
+    //? check the user is deleted or not
+    if (user.isDeleted) {
+        throw new AppError(httpStatus.FORBIDDEN, 'User is deleted')
     }
 
     //? check the user is active or blocked!
@@ -66,8 +76,69 @@ const updateUserDataIntoDB = async (jwtData: JwtPayload, payload: Partial<TUser>
     return result;
 }
 
+const deleteUserFromDB = async (email: string) => {
+    //? check the user is exists or not?
+    const user = await User.findOne({ email })
+    if (!user) {
+        throw new AppError(httpStatus.NOT_FOUND, 'User not found')
+    }
+
+    //? check the user is deleted or not
+    if (user.isDeleted) {
+        throw new AppError(httpStatus.FORBIDDEN, 'User is deleted')
+    }
+
+    //? check the user is active or blocked!
+    if (user.status === 'blocked') {
+        throw new AppError(httpStatus.FORBIDDEN, 'User is blocked!')
+    }
+
+    //* delete the user
+    const result = await User.findByIdAndUpdate(
+        user._id,
+        { isDeleted: true },
+        {
+            new: true,
+        }
+    )
+
+    return result;
+}
+
+
+const blockUserFromDB = async (email: string) => {
+    //? check the user is exists or not?
+    const user = await User.findOne({ email })
+    if (!user) {
+        throw new AppError(httpStatus.NOT_FOUND, 'User not found')
+    }
+
+    //? check the user is deleted or not
+    if (user.isDeleted) {
+        throw new AppError(httpStatus.FORBIDDEN, 'User is deleted')
+    }
+
+    //? check the user is active or blocked!
+    if (user.status === 'blocked') {
+        throw new AppError(httpStatus.FORBIDDEN, 'User is blocked!')
+    }
+
+    //* delete the user
+    const result = await User.findByIdAndUpdate(
+        user._id,
+        { status: 'blocked' },
+        {
+            new: true,
+        }
+    )
+
+    return result;
+}
+
 export const UserServices = {
     getAllUsersFromDB,
     getSingleUserFromDB,
     updateUserDataIntoDB,
+    deleteUserFromDB,
+    blockUserFromDB,
 }

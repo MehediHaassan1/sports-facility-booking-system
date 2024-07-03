@@ -120,21 +120,12 @@ userSchema.pre('find', function (next) {
     next();
 });
 
-userSchema.pre('findOne', function (next) {
-    this.find({ isDeleted: { $ne: true } });
-    next();
-});
-
 //! not getting the blocked user
 userSchema.pre('find', function (next) {
     this.find({ status: { $ne: 'blocked' } });
     next();
 });
 
-userSchema.pre('findOne', function (next) {
-    this.find({ status: { $ne: 'blocked' } });
-    next();
-});
 
 // Create the Mongoose model
 const User = model<TUser>('User', userSchema);

@@ -24,7 +24,7 @@ const authHandler = (...userRole: TUserRoles[]) => {
         //? check the user exists or not
         const isUserExists = await User.findOne({ email, role });
         if (!isUserExists) {
-            throw new AppError(httpStatus.NOT_FOUND, 'User not found!')
+            throw new AppError(httpStatus.FORBIDDEN, 'Forbidden Access!')
         }
 
         //? check the user is user or admin

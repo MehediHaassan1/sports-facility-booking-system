@@ -28,5 +28,17 @@ router.patch(
 )
 
 
+router.delete(
+    '/:email',
+    authHandler(userRoles.ADMIN),
+    UserControllers.deleteUser
+)
+
+router.put(
+    '/:email',
+    authHandler(userRoles.ADMIN),
+    UserControllers.blockUser
+)
+
 
 export const UserRoutes = router;

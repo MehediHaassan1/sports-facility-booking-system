@@ -39,8 +39,34 @@ const updateUserData = catchAsync(async (req, res) => {
     });
 })
 
+const deleteUser = catchAsync(async (req, res) => {
+    const email = req.params.email;
+    const result = await UserServices.deleteUserFromDB(email);
+
+    sendResponse(res, {
+        success: true,
+        status: httpStatus.OK,
+        message: "User deleted successfully",
+        data: result,
+    });
+})
+
+const blockUser = catchAsync(async (req, res) => {
+    const email = req.params.email;
+    const result = await UserServices.blockUserFromDB(email);
+
+    sendResponse(res, {
+        success: true,
+        status: httpStatus.OK,
+        message: "User blocked successfully",
+        data: result,
+    });
+})
+
 export const UserControllers = {
     getAllUsers,
     getSingleUser,
     updateUserData,
+    deleteUser,
+    blockUser,
 }
