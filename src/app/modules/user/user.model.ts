@@ -50,7 +50,7 @@ const AddressSchema = new Schema<TAddress>({
 )
 
 // Define the Mongoose schema for User
-const UserSchema = new Schema<TUser>({
+const userSchema = new Schema<TUser>({
     name: {
         type: UserNameSchema,
         required: true
@@ -101,20 +101,42 @@ const UserSchema = new Schema<TUser>({
 }, { timestamps: true });
 
 //! Hashed the password
-UserSchema.pre('save', async function (next) {
+userSchema.pre('save', async function (next) {
     this.password = await bcrypt.hash(this.password, Number(config.bcrypt_salt_round))
     next();
 })
 
 //! remove the password field in the response
-UserSchema.set('toJSON', {
+userSchema.set('toJSON', {
     transform: (doc, ret, options) => {
         delete ret.password;
         return ret;
     }
 });
 
+//! not getting the deleted user
+userSchema.pre('find', function (next) {
+    this.find({ isDeleted: { $ne: true } });
+    next();
+});
+
+userSchema.pre('findOne', function (next) {
+    this.find({ isDeleted: { $ne: true } });
+    next();
+});
+
+//! not getting the blocked user
+userSchema.pre('find', function (next) {
+    this.find({ status: { $ne: 'blocked' } });
+    next();
+});
+
+userSchema.pre('findOne', function (next) {
+    this.find({ status: { $ne: 'blocked' } });
+    next();
+});
+
 // Create the Mongoose model
-const User = model<TUser>('User', UserSchema);
+const User = model<TUser>('User', userSchema);
 
 export default User;

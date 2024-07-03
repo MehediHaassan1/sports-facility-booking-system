@@ -38,6 +38,29 @@ const createUserValidationSchema = z.object({
     address: AddressValidationSchema
 });
 
+// ----------------- Update user info ------------------- //
+const updateUserNameValidationSchema = z.object({
+    firstName: z.string().optional(),
+    lastName: z.string().optional(),
+});
+const updateAddressValidationSchema = z.object({
+    street: z.string().optional(),
+    city: z.string().optional(),
+    zipCode: z.string().optional(),
+    state: z.string().optional(),
+    country: z.string().optional(),
+});
+
+const updateUserValidationSchema = z.object({
+    name: updateUserNameValidationSchema.optional(),
+    gender: z.enum(
+        [...user_gender] as [string, ...string[]],
+        { message: 'Gender must be one of: male, female, other' }
+    ).optional(),
+    address: updateAddressValidationSchema.optional(),
+})
+
 export const validateUser = {
-    createUserValidationSchema
+    createUserValidationSchema,
+    updateUserValidationSchema
 }

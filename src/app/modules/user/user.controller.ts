@@ -17,8 +17,8 @@ const getAllUsers = catchAsync(async (req, res) => {
 
 const getSingleUser = catchAsync(async (req, res) => {
     const email = req.params.email;
-    console.log(email);
     const result = await UserServices.getSingleUserFromDB(email)
+
     sendResponse(res, {
         success: true,
         status: httpStatus.OK,
@@ -27,7 +27,20 @@ const getSingleUser = catchAsync(async (req, res) => {
     });
 })
 
+const updateUserData = catchAsync(async (req, res) => {
+    const jwtData = req.user;
+    const result = await UserServices.updateUserDataIntoDB(jwtData, req.body);
+
+    sendResponse(res, {
+        success: true,
+        status: httpStatus.OK,
+        message: "User updated successfully",
+        data: result,
+    });
+})
+
 export const UserControllers = {
     getAllUsers,
-    getSingleUser
+    getSingleUser,
+    updateUserData,
 }
