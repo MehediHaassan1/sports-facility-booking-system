@@ -11,7 +11,7 @@ const createFacilityIntoDB = async (payload: TFacility) => {
 
 const updateFacilityIntoDB = async (id: string, payload: Partial<TFacility>) => {
     //? check the facility exists or not...
-    const facility = Facility.findById(id);
+    const facility = await Facility.findById(id);
     if (!facility) {
         throw new AppError(httpStatus.NOT_FOUND, 'Facility not found')
     }
@@ -24,7 +24,38 @@ const updateFacilityIntoDB = async (id: string, payload: Partial<TFacility>) => 
     return result;
 }
 
+const deleteFacilityIntoDB = async (id: string) => {
+    //? check the facility exists or not...
+    const facility = await Facility.findById(id);
+    if (!facility) {
+        throw new AppError(httpStatus.NOT_FOUND, 'Facility not found')
+    }
+    const result = await Facility.findByIdAndUpdate(
+        id,
+        { isDeleted: true },
+        { new: true }
+    )
+    return result;
+}
+
+const getAllFacilitiesFromDB = async () => {
+    const result = await Facility.find();
+    return result;
+}
+
+const getSingleFacilityFromDB = async (id: string) => {
+    //? check the facility exists or not...
+    const facility = await Facility.findById(id);
+    if (!facility) {
+        throw new AppError(httpStatus.NOT_FOUND, 'Facility not found')
+    }
+    return facility;
+}
+
 export const FacilityServices = {
     createFacilityIntoDB,
     updateFacilityIntoDB,
+    deleteFacilityIntoDB,
+    getAllFacilitiesFromDB,
+    getSingleFacilityFromDB,
 }

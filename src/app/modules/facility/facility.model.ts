@@ -14,6 +14,25 @@ const facilitySchema = new Schema<TFacility>({
     }
 );
 
+//! check the facilities is deleted or not...
+facilitySchema.pre('find', function (next) {
+    this.find({ isDeleted: { $ne: true } });
+    next();
+});
+
+//! check the facility is deleted or not...
+facilitySchema.pre('findOne', function (next) {
+    this.find({ isDeleted: { $ne: true } });
+    next();
+});
+
+//! check the facility is deleted or not for update...
+facilitySchema.pre('findOneAndUpdate', function (next) {
+    this.find({ isDeleted: { $ne: true } });
+    next();
+});
+
+
 const Facility = model<TFacility>('Facility', facilitySchema);
 
 
