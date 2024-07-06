@@ -26,5 +26,11 @@ router.get(
     BookingControllers.getUserSpecificBookings
 )
 
+router.delete(
+    '/:id',
+    authHandler(userRoles.USER),
+    BookingControllers.cancelBooking
+)
+
 
 export const BookingRoutes = router;

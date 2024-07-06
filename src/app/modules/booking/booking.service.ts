@@ -57,8 +57,25 @@ const getUserSpecificBookingsFromDB = async (email: string) => {
     return result;
 }
 
+const cancelBookingIntoDB = async (id: string) => {
+    //? check the booking exists or not...
+    const booking = await Booking.findById(id)
+    if (!booking) {
+        throw new AppError(httpStatus.NOT_FOUND, 'Booking not found')
+    }
+
+    const result = await Booking.findByIdAndUpdate(
+        id,
+        { isBooked: 'canceled' },
+        { new: true }
+    )
+
+    return result;
+}
+
 export const BookingServices = {
     createBookingIntoDB,
     getAllBookingsFromDB,
     getUserSpecificBookingsFromDB,
+    cancelBookingIntoDB,
 }

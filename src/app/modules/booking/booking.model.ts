@@ -3,7 +3,7 @@ import { Types } from 'mongoose';
 import { TBooking } from './booking.interface';
 import { bookingStatus } from './booking.constant';
 
-const BookingSchema: Schema = new Schema({
+const bookingSchema = new Schema<TBooking>({
     date: {
         type: String,
         required: true
@@ -17,12 +17,12 @@ const BookingSchema: Schema = new Schema({
         required: true
     },
     user: {
-        type: Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'User',
         required: true
     },
     facility: {
-        type: Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'Facility',
         required: true
     },
@@ -38,6 +38,6 @@ const BookingSchema: Schema = new Schema({
     }
 });
 
-const Booking = model<TBooking>('Booking', BookingSchema);
+const Booking = model<TBooking>('Booking', bookingSchema);
 
 export default Booking;
