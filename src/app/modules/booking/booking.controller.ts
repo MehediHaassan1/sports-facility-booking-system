@@ -16,6 +16,29 @@ const createBooking = catchAsync(async (req, res) => {
 })
 
 
+const getAllBookings = catchAsync(async (req, res) => {
+    const result = await BookingServices.getAllBookingsFromDB();
+    sendResponse(res, {
+        success: true,
+        status: httpStatus.OK,
+        message: "Bookings retrieved successfully",
+        data: result,
+    })
+})
+
+const getUserSpecificBookings = catchAsync(async (req, res) => {
+    const email = req.user.email;
+    const result = await BookingServices.getUserSpecificBookingsFromDB(email);
+    sendResponse(res, {
+        success: true,
+        status: httpStatus.OK,
+        message: "Bookings retrieved successfully",
+        data: result,
+    })
+})
+
 export const BookingControllers = {
     createBooking,
+    getAllBookings,
+    getUserSpecificBookings,
 }

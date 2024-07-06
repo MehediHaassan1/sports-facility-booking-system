@@ -7,8 +7,6 @@ import Booking from "./booking.model";
 import { calculateTotalCost, isEndTimeBigger } from "./booking.utils";
 
 const createBookingIntoDB = async (email: string, payload: Partial<TBooking>) => {
-    // console.log(email);
-    // console.log(payload);
     //? check the user exists or not...
     const user = await User.findOne({ email })
 
@@ -39,9 +37,28 @@ const createBookingIntoDB = async (email: string, payload: Partial<TBooking>) =>
 
     const result = await Booking.create(payload);
     return result;
+}
 
+const getAllBookingsFromDB = async () => {
+    const result = await Booking.find();
+    return result;
+}
+
+const getUserSpecificBookingsFromDB = async (email: string) => {
+    //? check the user exists or not...
+    const user = await User.findOne({ email })
+
+    if (!user) {
+        throw new AppError(httpStatus.NOT_FOUND, 'User not found')
+    }
+
+    //* retrieve users all booking by id...
+    const result = await Booking.find({ user: user._id });
+    return result;
 }
 
 export const BookingServices = {
     createBookingIntoDB,
+    getAllBookingsFromDB,
+    getUserSpecificBookingsFromDB,
 }
